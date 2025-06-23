@@ -34,59 +34,43 @@ This documentation captures the configuration of a lightweight AD environment fo
   - OS: Windows Server 2022
   - RAM: 4 GB
   - Disk: 60 GB
-  - IP Address: 192.168.132.108
+  - IP Address: 192.168.108.132
   - Hostname: [DC1]
 - **Client VM 1 (Security Accounts/Single Purpose)**:
   - OS: Windows 11 Pro
   - RAM: 4 GB
   - Disk: 62 GB
   - IP Address: Dynamic
-  - DNS: 192.168.132.108
+  - DNS: 192.168.108.132
   - Hostname: [CLIENT1]
 - **Client VM 2 (General Client)**:
   - OS: Windows 11 Pro
   - RAM: 4 GB
   - Disk: 62 GB
   - IP Address: Dynamic
-  - DNS: 192.168.132.108
+  - DNS: 192.168.108.132
   - Hostname: [CLIENT2]
 - **Network**: Internal network (NAT/Host-Only)
 - **Domain**: [ghilby.local]
 
-**How to Document**:
-- Check IP addresses and hostnames in `ipconfig` (Command Prompt) on each VM.
-- Confirm domain name in ADUC or System Properties.
-
-**Image Placeholder**:
 ![DC1](image.png)
 ![CLIENT1](image-1.png)
 ![alt text](image-2.png)
-*Insert a screenshot of VMware showing all three VMs with their names and statuses.*
 
 ## Active Directory Structure
-- **Domain**: [e.g., lab.local]
+- **Domain**: [ghilby.local]
 - **Organizational Units (OUs)**:
-  - [e.g., Users, Computers, SinglePurpose]
-  - Describe any custom OUs and their purpose.
+  - [Corp - Computer, Servers, Users - Accounting, HR, IT, Managment, Marketing, and Vendors, Service Accounts]
+  - Main OU is Corp under this OU Computer which has both client computers, Servers which is currently empty, and Users where deparmental groups are created also in this OU are the OUs of each department Accounting, HR, IT, Managment, Marketing, Vendors which includes the users. Service Accounts OU is for the single purpose desktop.
 - **Groups**:
-  - [e.g., Docs_Users, Admins]
-  - Note security groups used for permissions.
-- **Users**:
-  - [e.g., user1, user2]
-  - List key user accounts (exclude passwords).
+  - [#all-employees, Accounting-Team, HR-group, IT-dept, Management-team, Marketing-intern, Marketing-Team, Seniot-IT-dept]
+  - [#all-employees - where all users are members. all Security Groups have at least 2 users assigned to them which is created manually]
 
-**How to Document**:
-- Open ADUC (`dsa.msc`) on the server.
-- Note the OU structure, groups, and key users.
-- Export structure: Right-click domain > Export List.
-
-**Image Placeholder**:
-![AD Structure](images/ad-structure.png)
-*Insert a screenshot of ADUC showing the OU structure and groups.*
+![ADUC](image-3.png)
 
 ## Group Policy Management
 - **GPOs Configured**:
-  - [e.g., User Restrictions: Disables Control Panel for users]
+  - [Account Lockout Policy, Default Domain policy, Desktop Wallpaper, Disable USB devices, Mapped Drives, Password Policy, Restrict Control Panel]
   - [e.g., Computer Security: Enables Windows Defender]
 - **Linked OUs**:
   - [e.g., User Restrictions linked to Users OU]
