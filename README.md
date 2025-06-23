@@ -9,25 +9,32 @@ This repository documents an existing Active Directory (AD) server setup on Wind
 4. [Group Policy Management](#group-policy-management)
 5. [File Services](#file-services)
 6. [Service Accounts](#service-accounts)
-7. [Single Purpose Computers](#single-purpose-computers)
 8. [Windows File Sharing](#windows-file-sharing)
-9. [Effective Permissions and Inheritance](#effective-permissions-and-inheritance)
-10. [Access-Based Enumeration](#access-based-enumeration)
-11. [Validation](#validation)
-12. [Troubleshooting Tips](#troubleshooting-tips)
-13. [Contributing](#contributing)
-14. [License](#license)
+8. [Access-Based Enumeration](#access-based-enumeration) 
+9. [Contributing](#contributing)
+10. [Closing](#closing-statement)
 
 ## Overview
 This documentation captures the configuration of a lightweight AD environment for managing users, groups, and resources in a lab setup. Key features include:
-- **Group Policy Management**: Centralized user and computer settings.
-- **File Services**: Shared file storage.
-- **Service Accounts**: Accounts for running services securely.
-- **Single Purpose Computers**: Restricted client for specific tasks.
-- **Windows File Sharing**: NTFS and share permissions for secure access.
-- **Effective Permissions and Inheritance**: Granular access control.
-- **Access-Based Enumeration**: Hides folders from unauthorized users.
+  - **Group Policy Management**: Centralized user and computer settings.
+  - **File Services**: Shared file storage.
+  - **Service Accounts**: Accounts for running services securely.
+  - **Single Purpose Computers**: Restricted client for specific tasks.
+  - **Windows File Sharing**: NTFS and share permissions for secure access.
+  - **Effective Permissions and Inheritance**: Granular access control.
+  - **Access-Based Enumeration**: Hides folders from unauthorized users.
 
+## Learning Objectives
+  By exploring this Active Directory lab setup, you will:
+  - Understand the installation and configuration of Active Directory Domain Services (AD DS) on Windows Server 2022.
+  - Learn to create and manage Organizational Units (OUs), users, and groups in ADUC.
+  - Gain proficiency in configuring Group Policy Objects (GPOs) to enforce security and user experience settings.
+  - Develop skills in setting up and securing file shares using NTFS permissions, share permissions, and Access-Based Enumeration.
+  - Explore the use of service accounts for running automated tasks securely.
+  - Configure and test a single-purpose computer with restricted functionality using AppLocker or similar tools.
+  - Master the concepts of effective permissions and permission inheritance in NTFS file systems.
+  - Practice troubleshooting common AD issues, such as DNS misconfigurations and GPO application failures.
+  
 ## Environment Details
 - **Hypervisor**: VMware Workstation/Player
 - **Server VM**:
@@ -70,150 +77,88 @@ This documentation captures the configuration of a lightweight AD environment fo
 
 ## Group Policy Management
 - **GPOs Configured**:
-  - [Account Lockout Policy, Default Domain policy, Desktop Wallpaper, Disable USB devices, Mapped Drives, Password Policy, Restrict Control Panel]
-  - [e.g., Computer Security: Enables Windows Defender]
-- **Linked OUs**:
-  - [e.g., User Restrictions linked to Users OU]
-- **Key Settings**:
-  - Describe specific policies (e.g., disable USB drives, restrict apps).
+  - [Account Lockout Policy, Desktop Wallpaper, Disable USB devices, Mapped Drives, Password Policy, Restrict Control Panel, Restrict Logon to Service Account]
+  - [All these GPOs are linked to the domain and the Corp OU]
 
-**How to Document**:
-- Open GPMC (`gpmc.msc`) on the server.
-- Expand Group Policy Objects, note GPO names and settings.
-- Check OU links under the domain.
-- Run `gpresult /r` on clients to confirm applied GPOs.
+![image](https://github.com/user-attachments/assets/6bb03af4-3e04-4450-bc97-fdc3db6e2bbc)
 
-**Image Placeholder**:
-![GPO Settings](images/gpo-settings.png)
-*Insert a screenshot of GPMC showing a GPO’s settings or OU links.*
+![image](https://github.com/user-attachments/assets/1688d631-b7db-4c05-a322-58346746864f)
+![image](https://github.com/user-attachments/assets/1f17e968-65f0-4097-9e1b-cda8d18ef24a)
 
 ## File Services
 - **File Server Role**: Installed
 - **Shared Folders**:
-  - [e.g., Path: C:\Shares\Docs, Share Name: Docs]
-  - List shared folders and their purposes.
-- **Quotas** (if any):
-  - [e.g., 1GB limit on Docs folder]
-- **Groups with Access**:
-  - [e.g., Docs_Users has Read/Write]
 
-**How to Document**:
-- Open Server Manager > File and Storage Services > Shares.
-- List shared folders and their properties.
-- Check folder properties in File Explorer for share details.
+  ![image](https://github.com/user-attachments/assets/743895d9-2f93-4bdb-9f73-676bb6152a8d)
 
-**Image Placeholder**:
-![Shared Folders](images/shared-folders.png)
-*Insert a screenshot of Server Manager showing configured shares.*
+  - HRGroup: HR-Group can only access
+  - Marketing: Marketing-Team has full access but Marketing-intern only has read access
+  - SHARED: #all-employees have full access
+  - Sofware: IT-dept have full acces but inside this folder Licenses which only Senior-IT-dept has full access
+  - VendorFiles: Third party users outside can write but not access
+
+![image](https://github.com/user-attachments/assets/4dd4d171-4a8b-4c4e-b9f4-877d23e45f38)
 
 ## Service Accounts
 - **Accounts**:
-  - [e.g., svc_app: Used for scheduled tasks]
-  - List service accounts and their purposes.
+  - [Website Login]
+  - Only for single purpose desktops
+    ![image](https://github.com/user-attachments/assets/676c45c5-1ae9-4542-beb7-9f9cc8909689)
 - **Permissions**:
-  - [e.g., svc_app has Write access to C:\Shares\Logs]
+  - Instant Login, Automatically opens application on startup this service account is for a kiosk type.
+  - Other users except for the Service Account cannot login to this PC.
 - **Usage**:
-  - [e.g., Runs a backup script]
-
-**How to Document**:
-- In ADUC, filter for service accounts (e.g., check “Password never expires”).
-- Note permissions in File Explorer or service properties.
-- Check Task Scheduler for tasks using service accounts.
-
-**Image Placeholder**:
-![Service Account](images/service-account.png)
-*Insert a screenshot of ADUC showing a service account’s properties.*
-
-## Single Purpose Computers
-- **Client VM**: [e.g., CLIENT1 in SinglePurpose OU]
-- **Restrictions**:
-  - [e.g., AppLocker restricts to Notepad and Calculator]
-  - Describe GPOs or settings limiting functionality.
-- **Purpose**:
-  - [e.g., Used for secure script execution]
-
-**How to Document**:
-- In ADUC, check which OU contains CLIENT1.
-- In GPMC, note GPOs linked to that OU.
-- Log in to CLIENT1, test restrictions, and describe results.
-
-**Image Placeholder**:
-![AppLocker Policy](images/applocker-policy.png)
-*Insert a screenshot of AppLocker settings in the GPO for SinglePurpose OU.*
+    [As for my case it displays my Github profile on startup]
+![image](https://github.com/user-attachments/assets/7ee577c1-a29c-4dae-a8bf-dbc006bff5de)
 
 ## Windows File Sharing
 - **NTFS Permissions**:
-  - [e.g., C:\Shares\Docs: Docs_Users has Read/Write, Admins has Full Control]
+  - **HRGroup**
+
+    ![image](https://github.com/user-attachments/assets/54dbf892-6589-4553-8a67-3cf5bf11b4d7)
+  - **Marketing**
+
+    ![image](https://github.com/user-attachments/assets/e3233c48-72e3-4ae8-9505-77481a22ec2c)
+  - **SHARED**
+
+    ![image](https://github.com/user-attachments/assets/09a7026c-0962-4077-b149-8ddad5a988d1)
+  - **Licences**
+
+    ![image](https://github.com/user-attachments/assets/95b77076-b5d0-40fe-9dd0-24af03d82adc)
+
 - **Share Permissions**:
-  - [e.g., Docs share: Authenticated Users has Full Control]
-- **Access Path**:
-  - [e.g., \\DC01\Docs]
+  - **HRGroup**
 
-**How to Document**:
-- Right-click shared folder > Properties > Security for NTFS permissions.
-- Go to Sharing tab > Share Permissions for share permissions.
-- Test access from CLIENT2 using `\\server\share`.
+    ![image](https://github.com/user-attachments/assets/f5ec4db0-98d6-4e03-90e0-0a55925e0291)
+  - **Marketing**
 
-**Image Placeholder**:
-![NTFS and Share Permissions](images/ntfs-share-permissions.png)
-*Insert a screenshot of the Security and Sharing tabs for a shared folder.*
+    ![image](https://github.com/user-attachments/assets/49ecbd77-5fb2-4e51-b985-a95739217787)
+  - **SHARED**
 
-## Effective Permissions and Inheritance
-- **Inheritance Settings**:
-  - [e.g., C:\Shares\Docs\Restricted has inheritance disabled]
-- **Effective Permissions**:
-  - [e.g., user1 has Read only to Restricted folder]
-- **Examples**:
-  - Describe a folder with custom permissions.
+    ![image](https://github.com/user-attachments/assets/67c7c669-fd88-4c11-9ed2-f665097ba0f7)
+  - **Software**
 
-**How to Document**:
-- In File Explorer, go to folder > Properties > Security > Advanced.
-- Check “Disable inheritance” status.
-- Use Effective Access tab to check a user’s permissions.
+    ![image](https://github.com/user-attachments/assets/1e0707ad-aa5d-435a-b75f-8b756c3d120e)
 
-**Image Placeholder**:
-![Effective Permissions](images/effective-permissions.png)
-*Insert a screenshot of the Effective Access tab for a user on a folder.*
+- **Access Paths**:
+  - \\WIN-FOQSSNIORHO\HRGroup
+  - \\WIN-FOQSSNIORHO\Marketing
+  - \\WIN-FOQSSNIORHO\SHARED
+  - \\WIN-FOQSSNIORHO\Sofware
+  - \\WIN-FOQSSNIORHO\Software\Licenses
 
 ## Access-Based Enumeration
-- **Status**: [e.g., Enabled on Docs share]
+- **Status**: Enabled
 - **Behavior**:
-  - [e.g., Users without permissions cannot see subfolders]
+  - Users without permissions cannot see subfolders
 - **Configuration**:
-  - Describe where ABE is applied.
-
-**How to Document**:
-- In Server Manager > File and Storage Services > Shares, check share properties for ABE.
-- Log in to CLIENT2 with a limited user, access the share, and note visible folders.
-
-**Image Placeholder**:
-![ABE Settings](images/abe-settings.png)
-*Insert a screenshot of the share properties showing ABE enabled.*
-
-## Validation
-- **GPOs**: [e.g., Control Panel disabled on CLIENT2]
-- **File Access**: [e.g., user1 can access Docs from CLIENT2]
-- **Single Purpose**: [e.g., CLIENT1 only runs approved apps]
-- **Service Accounts**: [e.g., svc_app runs task successfully]
-- **ABE**: [e.g., Limited user cannot see Restricted folder]
-
-**How to Document**:
-- Log in to CLIENT1 and CLIENT2 with test users.
-- Test each feature and note results.
-- Use Command Prompt or PowerShell to verify settings (e.g., `net share` for shares).
-
-**Image Placeholder**:
-![Validation Test](images/validation-test.png)
-*Insert a screenshot of a client accessing a share or a restricted app failing.*
-
-## Troubleshooting Tips
-- **AD Issues**: Verify DNS settings (`nslookup lab.local`).
-- **GPO Issues**: Run `gpresult /r` to check applied policies.
-- **File Access**: Use Effective Access tool for permission conflicts.
-- **ABE**: Ensure share is on Windows Server and ABE is enabled.
+  - ABE is applied on all folders
+- **Example**
+  - Logged in to user "Jimmy Jim" which is a member of the IT-dept, he can't access nor see the Licenses folder inside the Software folder
+    ![image](https://github.com/user-attachments/assets/4e106b2a-b338-48e2-987f-8469a1ef68b2)
 
 ## Contributing
 Contributions to improve this documentation are welcome. Submit issues or pull requests on GitHub.
 
-## License
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+## Closing Statement
+This documentation provides a comprehensive overview of the Active Directory server setup, capturing its configuration and functionality for educational and reference purposes. It serves as a foundation for understanding and managing the lab environment, with detailed insights into Group Policy, file sharing, and security features. Feel free to explore, test, or contribute to enhance this setup further!
