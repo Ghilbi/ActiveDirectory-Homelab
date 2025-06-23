@@ -34,29 +34,33 @@ This documentation captures the configuration of a lightweight AD environment fo
   - OS: Windows Server 2022
   - RAM: 4 GB
   - Disk: 60 GB
-  - IP Address: [e.g., 192.168.1.10]
-  - Hostname: [e.g., DC01]
+  - IP Address: 192.168.132.108
+  - Hostname: [DC1]
 - **Client VM 1 (Security Accounts/Single Purpose)**:
   - OS: Windows 11 Pro
   - RAM: 4 GB
   - Disk: 62 GB
-  - IP Address: [e.g., 192.168.1.11]
-  - Hostname: [e.g., CLIENT1]
+  - IP Address: Dynamic
+  - DNS: 192.168.132.108
+  - Hostname: [CLIENT1]
 - **Client VM 2 (General Client)**:
   - OS: Windows 11 Pro
   - RAM: 4 GB
   - Disk: 62 GB
-  - IP Address: [e.g., 192.168.1.12]
-  - Hostname: [e.g., CLIENT2]
+  - IP Address: Dynamic
+  - DNS: 192.168.132.108
+  - Hostname: [CLIENT2]
 - **Network**: Internal network (NAT/Host-Only)
-- **Domain**: [e.g., lab.local]
+- **Domain**: [ghilby.local]
 
 **How to Document**:
 - Check IP addresses and hostnames in `ipconfig` (Command Prompt) on each VM.
 - Confirm domain name in ADUC or System Properties.
 
 **Image Placeholder**:
-![VM Overview](images/vm-overview.png)
+![DC1](image.png)
+![CLIENT1](image-1.png)
+![alt text](image-2.png)
 *Insert a screenshot of VMware showing all three VMs with their names and statuses.*
 
 ## Active Directory Structure
