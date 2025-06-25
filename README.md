@@ -1,4 +1,5 @@
-# Active Directory Server Documentation
+# Active Directory Server Home Lab 
+![diagram](https://github.com/user-attachments/assets/033fad77-6303-4948-91e2-d9f4b7fba07c)
 
 This repository documents an existing Active Directory (AD) server setup on Windows Server 2022, hosted in a VMware environment. The configuration includes Group Policy Management, File Services, Service Accounts, Single Purpose Computers, Windows File Sharing (NTFS and Shared), Effective Permissions and Inheritance, and Access-Based Enumeration (ABE). The environment consists of one Windows Server 2022 VM and two Windows 11 client VMs.
 
