@@ -25,7 +25,6 @@ This documentation captures the configuration of a lightweight AD environment fo
   - **Access-Based Enumeration**: Hides folders from unauthorized users.
 
 ## Learning Objectives
-  By exploring this Active Directory lab setup, you will:
   - Understand the installation and configuration of Active Directory Domain Services (AD DS) on Windows Server 2022.
   - Learn to create and manage Organizational Units (OUs), users, and groups in ADUC.
   - Gain proficiency in configuring Group Policy Objects (GPOs) to enforce security and user experience settings.
